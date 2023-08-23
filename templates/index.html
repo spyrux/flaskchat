@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Synchronized Chat</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <style>
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 50vh;
+            margin: auto;
+        
+            border: 1px solid #ccc;
+            max-width: 400px;
+        }
+        
+        .message-box {
+            
+            padding: 10px;
+            display: flex; /* Add this */
+            flex-direction: column; /* Add this */
+            max-width: 250px;
+            min-height: 250px;
+            overflow:auto;
+            margin-top:20px;
+        }
+        
+        
+        .submit-bar {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .submit-button {
+            margin-left: 20px;
+        }
+        .namebox{
+            margin: 5px;
+        }
+        
+    </style>
+
+
+    <script type="text/javascript">
+    
+        $(document).ready(function () {
+
+                // sending a connect request to the server.
+                var socket = io.connect('http://localhost:5000');
+                var form = document.getElementById("form");
+                var input = document.getElementById("textbox");
+                var chat = document.getElementById("chat");
+                var username = document.getElementById("user");
+
+
+                // An event handler for a change of value                 
+                form.addEventListener('submit',function(event){
+                    event.preventDefault(); 
+
+                    if(input.value){
+                        socket.emit('New chat message', {
+                            user : username.value,
+                            data : input.value
+                        });
+                        console.log('emitted');
+                        input.value = '';
+                    }
+
+                    
+                    
+
+                });
+
+
+                
+
+
+                socket.on('after connect', function (msg) {
+                    console.log('After connect', msg);
+                });
+
+
+                
+                socket.on('update chat', function (msg) {
+                    console.log(msg);
+                    var node = document.createElement('li');
+                    node.appendChild(document.createTextNode(msg['user'].concat(" : ", msg['data'])));
+                    chat.appendChild(node);
+                });
+
+            });
+
+       </script>
+    
+</head>
+<body>
+	<div class="container text-center">
+		<h1 >Socket Chat Demo</h1>
+
+	</div>
+    <div class="message-container">
+        <input class ="namebox" id ="user" value = "username"></input>
+        <ul class="message-box sync2" id="chat" value = "{{chat}}" style="list-style-type: none;">
+            {% for str in chat %}
+            <li>
+                {{str}}
+            </li>
+            {% endfor %}
+        </ul>
+        <form class ="mt-5" id = "form">
+            <div class="form-group">
+                <form id="form" action="">
+                    <input id="textbox" autocomplete="off" /><button>Send</button>
+                </form>
+        </div>
+        </form>
+    </div>
+</body>
+</html>

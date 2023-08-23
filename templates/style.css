@@ -1,0 +1,34 @@
+.message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 60vh;
+    margin: auto;
+  
+    border: 1px solid #ccc;
+    max-width: 400px;
+}
+
+.message-box {
+    
+    padding: 10px;
+    display: flex; /* Add this */
+    flex-direction: column; /* Add this */
+    max-width: 300px;
+    overflow:scroll
+    
+}
+
+
+.submit-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+}
+
+.submit-button {
+    margin-left: 20px;
+
+}
